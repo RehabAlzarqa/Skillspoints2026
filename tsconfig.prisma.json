@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES2017",
+      "module": "CommonJS",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "isolatedModules": false,
+      "noEmit": false,
+      "outDir": "dist"
+    },
+    "include": ["prisma/**/*.ts"]
+  }
+  //كل ما تغيّري شيء داخل المشروع، Docker يحتاج يبني image جديدة:
+
+//docker compose up -d --build
