@@ -32,11 +32,10 @@ model MicroCourse {
   category      String?
   videoUrl      String?
   pointsReward  Int          @default(0)
-  User          User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
+  User          User        @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
   MyLearning    MyLearning[]
 
   @@index([authorId], map: "MicroCourse_creatorId_idx")
-  @@index([authorId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -62,7 +61,6 @@ model MyLearning {
 
   @@index([courseId], map: "MyLearning_microCourseId_idx")
   @@index([userId])
-  @@index([courseId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -74,8 +72,6 @@ model MyRewards {
   Reward     Reward   @relation(fields: [rewardId], references: [idReward], map: "RewardHistory_rewardId_fkey")
   User       User     @relation(fields: [userId], references: [idUser], map: "RewardHistory_userId_fkey")
 
-  @@index([rewardId])
-  @@index([userId])
   @@index([rewardId], map: "RewardHistory_rewardId_idx")
   @@index([userId], map: "RewardHistory_userId_idx")
 }
