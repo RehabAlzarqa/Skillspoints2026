@@ -1,3 +1,17 @@
+# Exclude dependencies installed locally
 node_modules
-npm-debug.log
-.env
+
+# Exclude the local Next.js build
+.next
+
+# Exclude Git history
+.git
+
+# Exclude npm debug logs
+npm-debug.log*
+
+# Exclude environment files that may contain secrets
+.env*
+
+# Keep the example file without secrets
+!.env.example
