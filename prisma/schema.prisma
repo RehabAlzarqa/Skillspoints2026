@@ -3,39 +3,43 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  name           String
-  email          String        @unique
-  password       String
-  totalPoints    Int           @default(0)
-  createdAt      DateTime      @default(now())
-  idUser         Int           @id @default(autoincrement())
-  firstName      String?
-  lastName       String?
-  jobTitle       String?
-  profilePicture String?
-  MicroCourse    MicroCourse[]
-  MyLearning     MyLearning[]
-  MyRewards      MyRewards[]
+  name              String
+  email             String        @unique
+  password          String
+  totalPoints       Int           @default(0)
+  createdAt         DateTime      @default(now())
+  idUser            Int           @id @default(autoincrement())
+  firstName         String?
+  lastName          String?
+  jobTitle          String?
+  profilePicture    String?
+  profilePictureUrl String?
+  MicroCourse       MicroCourse[]
+  MyLearning        MyLearning[]
+  MyRewards         MyRewards[]
 }
 
 model MicroCourse {
-  title         String
-  description   String?
-  createdAt     DateTime     @default(now())
-  authorId      Int
-  idMicroCourse Int          @id @default(autoincrement())
-  category      String?
-  videoUrl      String?
-  pointsReward  Int          @default(0)
-  User          User        @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
-  MyLearning    MyLearning[]
+  title           String
+  description     String?
+  createdAt       DateTime     @default(now())
+  authorId        Int
+  idMicroCourse   Int          @id @default(autoincrement())
+  category        String?
+  videoUrl        String?
+  pointsReward    Int          @default(0)
+  durationMinutes Int?
+  User            User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
+  MyLearning      MyLearning[]
 
   @@index([authorId], map: "MicroCourse_creatorId_idx")
+  @@index([authorId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -45,7 +49,7 @@ model Reward {
   description       String?
   pointsCost        Int         @default(0)
   availableQuantity Int?
-  image             String?
+  imageUrl          String?
   MyRewards         MyRewards[]
 }
 
@@ -61,6 +65,7 @@ model MyLearning {
 
   @@index([courseId], map: "MyLearning_microCourseId_idx")
   @@index([userId])
+  @@index([courseId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -74,4 +79,6 @@ model MyRewards {
 
   @@index([rewardId], map: "RewardHistory_rewardId_idx")
   @@index([userId], map: "RewardHistory_userId_idx")
+  @@index([rewardId])
+  @@index([userId])
 }
