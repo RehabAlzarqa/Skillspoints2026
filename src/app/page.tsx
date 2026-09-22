@@ -1,11 +1,13 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 const page = () => {
-    return ( 
-        <div className="w-full h-screen bg-yellow-700">
-            <Header />
-        </div>
-     );
-}
- 
+  return (
+    <div className="w-full h-screen bg-yellow-700">
+      <Header />
+      <Footer />
+    </div>
+  );
+};
+
 export default page;
