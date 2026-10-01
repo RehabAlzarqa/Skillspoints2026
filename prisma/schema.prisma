@@ -9,7 +9,6 @@ datasource db {
 }
 
 model User {
-  name              String
   email             String        @unique
   password          String
   totalPoints       Int           @default(0)
@@ -26,17 +25,16 @@ model User {
 }
 
 model MicroCourse {
-  title           String
-  description     String?
-  createdAt       DateTime     @default(now())
-  authorId        Int
-  idMicroCourse   Int          @id @default(autoincrement())
-  category        String?
-  videoUrl        String?
-  pointsReward    Int          @default(0)
-  durationMinutes Int?
-  User            User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
-  MyLearning      MyLearning[]
+  title         String
+  description   String?
+  createdAt     DateTime     @default(now())
+  authorId      Int
+  idMicroCourse Int          @id @default(autoincrement())
+  category      String?
+  videoUrl      String?
+  pointsReward  Int          @default(0)
+  User          User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
+  MyLearning    MyLearning[]
 
   @@index([authorId], map: "MicroCourse_creatorId_idx")
   @@index([authorId])

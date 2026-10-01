@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
         <div className="flex items-center">
           <Link href="/" className="inline-block">
             <Image
-              src="/images/LogoFooter.png"
+              src="/images/footer-logo.png"
               alt="SkillsPoints"
               width={220}
               height={50}
