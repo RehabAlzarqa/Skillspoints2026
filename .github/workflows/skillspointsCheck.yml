@@ -1,0 +1,40 @@
+# The name of this workflow
+name: SkillsPoints Checks
+
+# Run when I push code
+# When the workflow should run
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# The jobs to execute
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      
+        
+      - name: Check code with ESLint
+        run: npm run lint 
+
+      - name:  Run build 
+        run: npm run build
+        
+      - name: Check dependencies for vulnerabilities
+        run: npm audit --audit-level=high
+
+      # - name: Run tests
+      #   run: npm test -- --run
