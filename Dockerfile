@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 
-RUN npm install
+RUN npm ci
 
 # Copy all files
 COPY . .
@@ -25,3 +25,5 @@ EXPOSE 3000
 
 # Start the app
 CMD ["npm", "start"]
+
+

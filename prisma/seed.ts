@@ -3,11 +3,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Prisma seed (TS) started...");
-
+  console.log("🌱 Seed completed.");
   await prisma.user.create({
     data: {
-      name: "Test User",
+      firstName: "Test ",
+      lastName: "User",
       email: "test@example.com",
       password: "hashed-password",
     },
