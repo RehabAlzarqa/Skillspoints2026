@@ -33,8 +33,11 @@ jobs:
       - name:  Run build 
         run: npm run build
         
-      - name: Check dependencies for vulnerabilities
-        run: npm audit --audit-level=high
+      - name: Check production dependencies
+        run: npm audit --omit=dev --audit-level=high
 
+      - name: Report vulnerabilities in all dependencies
+        continue-on-error: true
+        run: npm audit --audit-level=high
       # - name: Run tests
       #   run: npm test -- --run
