@@ -39,8 +39,35 @@ const Page = () => {
         .oneOf([ref("password")], "Passwords must match"),
     }),
 
-    onSubmit: () => {
-      alert("submitting!");
+    onSubmit: async (values, helpers) => {
+      try {
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: values.firstName.trim(),
+            lastName: values.lastName.trim(),
+            email: values.email.trim(),
+            password: values.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.message || "Registration failed");
+          return;
+        }
+
+        alert("Account created successfully!");
+        helpers.resetForm();
+      } catch {
+        alert("Unable to register. Please try again.");
+      } finally {
+        helpers.setSubmitting(false);
+      }
     },
   });
 

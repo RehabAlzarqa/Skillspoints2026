@@ -9,6 +9,7 @@
 
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 
 //STEPS
@@ -46,20 +47,21 @@ if (!userExistes) {
     })
 }
 
+const isPasswordCorrect = await bcrypt.compare(password, userExistes.password);
+
+if (!isPasswordCorrect) {
+    return NextResponse.json({
+        msg: "Invalid credentials",
+        
+    },
+{status:401})
+}
 
 return NextResponse.json({
-    msg:"login seccfully",
-    status: 200
+    msg:"Login successful",
+    
 });
     
 }
-
-
-
-
-//Body
-// URL params
-// Query params
-// !Steps
 
 

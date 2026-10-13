@@ -31,13 +31,12 @@ export async function POST(request: NextRequest) {
   const { email, password, firstName, lastName } =await request.json();
 
 // Validate the info of the user (validation like spellings, ) for the fields and their values
-  if (!email || !password || !firstName || !lastName) {
-    return NextResponse.json({
-        msg: "fields are required",
-        status: 400
-    })
-  }
-
+if (!email || !password || !firstName || !lastName) {
+  return NextResponse.json(
+    { message: "All fields are required" },
+    { status: 400 }
+  );
+}
 // Validate if the user already exist
 const userExists = await prisma.user.findUnique({
     where:{
@@ -46,12 +45,11 @@ const userExists = await prisma.user.findUnique({
 });
 
 if (userExists) {
-    return NextResponse.json({
-        msg: "user already exists",
-        status: 409
-    })
+  return NextResponse.json(
+    { message: "User already exists" },
+    { status: 409 }
+  );
 }
-
 
 
 const strongness = 10;
