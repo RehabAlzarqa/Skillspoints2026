@@ -10,11 +10,15 @@ grâce à des micro-cours, avec un système de points et de récompenses.
 
 Le projet est en cours de développement.
 
-La première version comprend les pages d’accueil, d’inscription
-et de connexion, ainsi que les routes API d’authentification.
+La première version comprend :
+- une page d’accueil responsive ;
+- un formulaire d’inscription avec validation des champs ;
+- la création d’un utilisateur dans PostgreSQL via une API Next.js et Prisma ;
+- la vérification des emails déjà utilisés ;
+- une page de connexion et une API de vérification des identifiants.
 
-Le build et les contrôles obligatoires de la CI sont fonctionnels.
-La validation complète des parcours utilisateur reste à réaliser.
+L’inscription a été testée avec une base PostgreSQL locale dans Docker.
+Les commandes ESLint et build Next.js passent en local.
 
 Fonctionnalités prévues :
 - consulter et partager des micro-cours ;
@@ -24,26 +28,25 @@ Fonctionnalités prévues :
 
 ## Technologies
 
-- Next.js 15 et React 19 : interface et routes API
+- Next.js 15 et React 19 : pages et composants de l’interface
+- Next.js Route Handlers : API backend
 - TypeScript : typage du code
-- Tailwind CSS : styles
-- PostgreSQL : base de données
-- Prisma : accès aux données et migrations
-- Docker Compose : environnement local
+- Tailwind CSS : styles de l’interface
+- PostgreSQL : stockage des données
+- Prisma : accès à la base et gestion des migrations
+- bcrypt : hachage et vérification des mots de passe
+- Docker Compose : lancement de PostgreSQL en local
 - GitHub Actions : intégration continue
+
 
 ## Prérequis
 
-Pour lancer l’ensemble avec Docker :
-- Git
-- Docker et Docker Compose
+- Git pour cloner le repository.
+- Node.js 22 et npm pour installer et lancer l’application.
+- Docker Desktop avec Docker Compose pour lancer PostgreSQL en local.
 
-Pour travailler sur l’application hors conteneur :
-- Node.js 22 et npm
-- une base PostgreSQL accessible
+Docker Desktop doit être démarré avant de lancer la base de données.
 
-Le Dockerfile actuel utilise Node.js 20.
-La CI utilise Node.js 22.
 
 ## Installation
 
@@ -54,80 +57,47 @@ git clone --branch chore/test-environment https://github.com/RehabAlzarqa/Skills
 cd Skillspoints2026
 ```
 
-Cette branche contient la configuration présentée pour la Démo 2.
-
 ### 2. Préparer les variables d’environnement
 
 ```bash
 cp .env.example .env
 ```
 
-Dans `.env`, définir les paramètres de la base locale :
+Dans `.env`, remplacer `replace_with_your_password` par le mot
+de passe local choisi dans `POSTGRES_PASSWORD`, `DATABASE_URL`
+et `DIRECT_URL`.
 
-```dotenv
-POSTGRES_DB=skillspoints_local
-POSTGRES_USER=local_user
-POSTGRES_PASSWORD=choisir_un_mot_de_passe_local
-APP_PORT=3000
-DB_PORT=5432
-```
+Les caractères spéciaux du mot de passe doivent être encodés
+uniquement dans les URL de connexion.
 
-Ne jamais publier de vrais identifiants dans GitHub.
-Le fichier `.env` est exclu par `.gitignore`.
+Le fichier `.env` est exclu par `.gitignore` et ne doit pas être
+publié sur GitHub.
 
-## Lancement avec Docker
+## Lancement en développement
 
-```bash
-docker compose up --build -d
-```
+L’application Next.js fonctionne sur l’ordinateur.
+La base PostgreSQL fonctionne dans Docker.
+Le backend accède à la base locale via Prisma.
 
-La configuration contient trois services :
-- `db` : PostgreSQL ;
-- `migrate` : application des migrations Prisma ;
-- `app` : application Next.js.
 
-L’application démarre après la réussite des migrations.
-Les URL de connexion à PostgreSQL sont définies par Docker Compose.
+### 1. Démarrer PostgreSQL
 
-Ouvrir : http://localhost:3000
-
-### Vérifier les services
-
-```bash
-docker compose ps
-docker compose logs app
-docker compose logs migrate
-```
-
-### Arrêter les services
-
-```bash
-docker compose down
-```
-
-Les données PostgreSQL sont conservées dans un volume Docker.
-
-## Développement hors conteneur
-
-### 1. Démarrer uniquement PostgreSQL
+Ouvrir Docker Desktop, puis exécuter :
 
 ```bash
 docker compose up -d db
 ```
 
-### 2. Compléter `.env`
+Vérifier que la base est prête :
 
-Ajouter les URL de connexion correspondant aux paramètres locaux :
-
-```dotenv
-DATABASE_URL="postgresql://local_user:choisir_un_mot_de_passe_local@localhost:5432/skillspoints_local?schema=public"
-DIRECT_URL="postgresql://local_user:choisir_un_mot_de_passe_local@localhost:5432/skillspoints_local?schema=public"
+```bash
+docker compose ps db
 ```
 
-Adapter l’utilisateur, le mot de passe, le port et le nom de la base.
-Les caractères spéciaux du mot de passe doivent être encodés dans les URL.
+Attendre que le statut affiche `healthy`.
 
-### 3. Installer et préparer l’application
+
+### 2. Installer les dépendances et préparer Prisma
 
 ```bash
 npm ci
@@ -135,7 +105,14 @@ npx prisma generate
 npx prisma migrate deploy
 ```
 
-### 4. Démarrer le serveur de développement
+- `npm ci` installe les dépendances du projet.
+- `prisma generate` génère le client Prisma.
+- `prisma migrate deploy` applique les migrations à la base locale.
+
+
+
+
+### 3. Démarrer le serveur de développement
 
 ```bash
 npm run dev
@@ -145,81 +122,90 @@ Ouvrir : http://localhost:3000
 
 ## Environnement local
 
-Par défaut :
-- application : port `3000` ;
-- PostgreSQL : port `5432`.
+- Next.js fonctionne sur l’ordinateur avec `npm run dev`,
+  à l’adresse http://localhost:3000.
+- PostgreSQL fonctionne dans Docker, sur le port `5432`.
+- Prisma utilise les variables `DATABASE_URL` et `DIRECT_URL`
+  du fichier `.env` pour accéder à la base locale.
+- Les données sont conservées dans le volume Docker `db_data_dev`.
+- Les données locales sont séparées de celles de Supabase.
 
-Les ports Docker sont configurables avec `APP_PORT` et `DB_PORT`.
-
-Changer les ports ne suffit pas à isoler les données :
-une instance ou un volume de base distinct est nécessaire
-pour un environnement de test séparé.
-
-Le lancement Docker exécute une version construite de l’application.
-`npm run dev` permet le développement avec rechargement automatique.
+Le serveur de développement prend automatiquement en compte
+les modifications du code.
 
 ## Organisation du projet
 
-- `src/app` : pages et routes API Next.js
-- `prisma/schema.prisma` : modèles et relations
+- `src/app` : pages de l’application
+- `src/app/api` : routes API du backend
+- `src/components` : composants de l’interface
+- `src/lib/prisma.ts` : initialisation du client Prisma
+- `prisma/schema.prisma` : modèles et relations des données
 - `prisma/migrations` : migrations de la base
 - `.github/workflows` : configuration de la CI
-- `Dockerfile` : construction de l’image de l’application
-- `docker-compose.yml` : services locaux
-- `.env.example` : exemple de configuration
+- `docker-compose.yml` : configuration des services Docker
+- `Dockerfile` : instructions de construction de l’image Next.js
+- `.env.example` : modèle des variables d’environnement
 
-Le frontend et le backend sont regroupés dans le même projet Next.js.
-Prisma assure l’accès à PostgreSQL depuis le code serveur.
+Le frontend et le backend sont regroupés dans un même projet Next.js.
+Le backend utilise Prisma pour accéder à PostgreSQL.
 
 ## Workflow Git
 
-Workflow prévu :
-1. créer une branche de travail depuis `develop` ;
-2. réaliser et vérifier les modifications ;
-3. ouvrir une pull request vers `develop` ;
-4. intégrer une version validée dans `main`.
+Le projet utilise un workflow avec les branches `main`, `develop`
+et des branches de travail.
 
-Conventions de branches :
-- `feat/...` : fonctionnalité
+- `main` : version stable
+- `develop` : intégration des fonctionnalités
+- `feat/...` : nouvelle fonctionnalité
 - `fix/...` : correction
 - `chore/...` : configuration ou maintenance
 
+Les modifications sont réalisées sur une branche de travail,
+puis proposées dans une pull request vers `develop`.
+
+Après validation, une version stable peut être intégrée dans `main`.
+
+
 ## Vérifications
+
+Vérifier le code et construire l’application :
 
 ```bash
 npm run lint
 npm run build
+```
+
+Vérifier la validité du schéma Prisma :
+
+```bash
 npx prisma validate
 ```
 
-Les tests peuvent être lancés avec :
+Contrôler les dépendances de production :
 
 ```bash
-npm test -- --run
+npm audit --omit=dev --audit-level=high
 ```
-
-Les tests ne sont pas encore exécutés dans la CI actuelle.
 
 ## Intégration continue
 
-Le workflow GitHub Actions se déclenche :
-- à chaque push ;
-- à chaque pull request ;
-- manuellement.
+Le workflow GitHub Actions « SkillsPoints Checks » se déclenche
+à chaque push, à chaque pull request et manuellement.
 
-Contrôles obligatoires :
-- installation avec `npm ci` ;
-- ESLint ;
+Les contrôles obligatoires sont :
+- installation des dépendances avec `npm ci` ;
+- vérification du code avec ESLint ;
 - build Next.js ;
 - audit des dépendances de production.
 
-Un audit complet est également exécuté avec
-`continue-on-error: true`.
+Un audit de toutes les dépendances est également exécuté.
+Il est non bloquant grâce à `continue-on-error: true`.
 
-Une vulnérabilité connue liée à `braces`, dans la chaîne
-de dépendances d’ESLint, reste à suivre.
-Le succès de la CI ne signifie donc pas l’absence
-de toute vulnérabilité.
+Des vulnérabilités liées à `braces` restent signalées dans
+les dépendances des outils de développement, notamment ESLint
+et shadcn. Elles restent à suivre et à corriger.
+
+Les tests automatisés ne sont pas encore exécutés dans cette CI.
 
 Des overrides sont utilisés pour :
 - PostCSS dans Next.js : `8.5.28` ;
@@ -227,14 +213,26 @@ Des overrides sont utilisés pour :
 
 Ces overrides doivent être réévalués lors des mises à jour.
 
+
 ## Stratégie de déploiement
 
-La stratégie envisagée est :
-- Vercel pour l’application Next.js ;
+Le déploiement prévu repose sur :
+- Vercel pour l’application Next.js et ses routes API ;
 - Supabase pour la base PostgreSQL.
 
-Le déploiement nécessite la configuration des variables
-d’environnement et l’application des migrations à la base cible.
+Les données de développement restent dans PostgreSQL local,
+exécuté avec Docker, séparément de la base utilisée pour le déploiement.
 
-Le workflow GitHub Actions actuel effectue les vérifications ;
-il ne déploie pas l’application.
+Avant le déploiement :
+1. vérifier le code avec la CI ;
+2. configurer `DATABASE_URL` et `DIRECT_URL` dans l’environnement
+   d’hébergement pour connecter Prisma à Supabase ;
+3. vérifier l’état des migrations sur la base cible et appliquer
+   celles qui sont nécessaires ;
+4. déployer l’application ;
+5. tester l’inscription et la connexion sur la version publiée.
+
+Les identifiants de la base ne doivent pas être stockés dans GitHub.
+
+Le workflow GitHub Actions actuel vérifie le projet.
+Il ne réalise pas encore de déploiement automatique.
