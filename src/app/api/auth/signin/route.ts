@@ -10,6 +10,8 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
+
 
 
 //STEPS
@@ -47,21 +49,35 @@ if (!userExistes) {
     })
 }
 
-const isPasswordCorrect = await bcrypt.compare(password, userExistes.password);
+const isPasswordCorrect = await bcrypt.compare(
+  password,
+  userExistes.password
+);
 
 if (!isPasswordCorrect) {
-    return NextResponse.json({
-        msg: "Invalid credentials",
-        
-    },
-{status:401})
+  return NextResponse.json(
+    { msg: "Invalid credentials" },
+    { status: 401 }
+  );
 }
 
-return NextResponse.json({
-    msg:"Login successful",
-    
-});
-    
+const JWT_PASSWORD = process.env.JWT_PASSWORD;
+
+if (!JWT_PASSWORD) {
+  return NextResponse.json(
+    { msg: "Server configuration error" },
+    { status: 500 }
+  );
 }
 
+const token = jwt.sign(
+  { userId: userExistes.idUser },
+  JWT_PASSWORD,
+  { expiresIn: "1h" }
+);
 
+ return NextResponse.json({
+    msg: "Login successful",
+    token: token
+ });
+ }

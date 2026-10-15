@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 
 
 
@@ -55,13 +57,19 @@ if (userExists) {
 const strongness = 10;
 const hash = await bcrypt.hash(password, strongness);
 
+// Generate a token for the user.
+const JWT_PASSWORD = process.env.JWT_PASSWORD;
+const token = jwt.sign({ email }, JWT_PASSWORD);
+// Generate a token for the user.
+
 await prisma.user.create({
     data:{
       email,
       firstName,
       lastName,
       password: hash,
-      totalPoints: 0
+      totalPoints: 0,
+      token: token
     }
   })
 
