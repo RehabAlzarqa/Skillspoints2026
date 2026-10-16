@@ -1,30 +1,47 @@
 type User = {
-    id: number;
-    name: string;
-    email: string;
-    password:string;
-    totalPoints: number;
-    createdAt: Date;
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  jobTitle: string;
+  profilePictureUrl: string;
+  totalPoints: number;
 }
 
 type MicroCourse = {
-    idMicroCourse: number;
-    title: string;
-    description: string;
-    createdAt:string;
-    creatorId: number;
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  authorId: string;
+  category: string;
+  videoUrl: string;
+  pointsReward: number;
 }
 
-type Learning = {
-
+type MyLearning = {
+  id: string;
+  userId: string;
+  courseId: string;
+  startDate: string;
+  status: 'in-progress' | 'completed'
 }
 
 
 type Reward = {
-
+  id: string;
+  name: string;
+  description: string;
+  pointsCost: number;
+  availableQuantity: number;
+  imageUrl?: string;
 }
 
 
-type RewardHistory = {
-    
+type MyRewards = {
+  id: string;
+  userId: string;
+  rewardId: string;
+  redeemedAt: string;
 }

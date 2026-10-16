@@ -7,10 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install -g ts-node typescript
 
-RUN npm install
+RUN npm ci
 
 # Copy all files
 COPY . .
@@ -27,3 +25,5 @@ EXPOSE 3000
 
 # Start the app
 CMD ["npm", "start"]
+
+

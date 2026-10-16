@@ -3,24 +3,26 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  name           String
-  email          String        @unique
-  password       String
-  totalPoints    Int           @default(0)
-  createdAt      DateTime      @default(now())
-  idUser         Int           @id @default(autoincrement())
-  firstName      String?
-  lastName       String?
-  jobTitle       String?
-  profilePicture String?
-  MicroCourse    MicroCourse[]
-  MyLearning     MyLearning[]
-  MyRewards      MyRewards[]
+  email             String        @unique
+  password          String
+  totalPoints       Int           @default(0)
+  createdAt         DateTime      @default(now())
+  idUser            Int           @id @default(autoincrement())
+  firstName         String?
+  lastName          String?
+  jobTitle          String?
+  profilePicture    String?
+  profilePictureUrl String?
+  token             String?
+  MicroCourse       MicroCourse[]
+  MyLearning        MyLearning[]
+  MyRewards         MyRewards[]
 }
 
 model MicroCourse {
@@ -46,7 +48,7 @@ model Reward {
   description       String?
   pointsCost        Int         @default(0)
   availableQuantity Int?
-  image             String?
+  imageUrl          String?
   MyRewards         MyRewards[]
 }
 
@@ -74,8 +76,8 @@ model MyRewards {
   Reward     Reward   @relation(fields: [rewardId], references: [idReward], map: "RewardHistory_rewardId_fkey")
   User       User     @relation(fields: [userId], references: [idUser], map: "RewardHistory_userId_fkey")
 
-  @@index([rewardId])
-  @@index([userId])
   @@index([rewardId], map: "RewardHistory_rewardId_idx")
   @@index([userId], map: "RewardHistory_userId_idx")
+  @@index([rewardId])
+  @@index([userId])
 }
