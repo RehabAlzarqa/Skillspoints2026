@@ -1,69 +1,19 @@
-import Image from "next/image";
+import Link from "next/link";
+import Brand from "./components/brand";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="landing">
+      <header className="site-header"><Brand /><nav aria-label="Main navigation"><a href="#how-it-works">How it works</a><a href="#possibilities">Why SkillsPoints</a></nav><div className="header-actions"><Link href="/signin" className="signin-link">Sign in</Link><Link href="/signup" className="button primary small">Get started <span aria-hidden="true">↗</span></Link></div></header>
+      <main>
+        <section className="hero">
+          <div className="hero-copy"><span className="hero-kicker"><span /> A LITTLE CURIOSITY GOES A LONG WAY</span><h1>Your next chapter<br />starts with a<br /><span>new skill.</span><span className="heading-star" aria-hidden="true">✳</span></h1><p>Turn your curiosity into progress. Discover new skills, build your confidence, and make every step count.</p><div className="hero-actions"><Link href="/signup" className="button primary">Start your journey <span aria-hidden="true">↗</span></Link><a href="#how-it-works" className="text-link">See how it works <span aria-hidden="true">↓</span></a></div><div className="hero-caption"><span className="tiny-star">✦</span> Your pace. Your potential. Your possibilities.</div></div>
+          <div className="hero-visual" aria-label="Illustration of a personal learning journey"><div className="visual-top"><span>THE BEST INVESTMENT IS YOU.</span><span>01 / ∞</span></div><span className="visual-orbit" /><div className="big-flower" aria-hidden="true">✳</div><div className="progress-card"><span className="card-icon">↗</span><div><span className="card-label">A LITTLE BETTER, EVERY DAY</span><strong>Your potential is growing.</strong></div><div className="progress-track"><span /></div><div className="card-bottom"><span>Keep showing up</span><span>✦ +100 points</span></div></div><div className="visual-tag">Curiosity looks good on you.</div><div className="visual-bottom"><span>LEARN SOMETHING.<br />BECOME SOMETHING MORE.</span><span className="round-arrow">↗</span></div></div>
+        </section>
+        <section id="how-it-works" className="how-section"><div className="section-intro"><p className="eyebrow">BIG POSSIBILITIES. SIMPLE BEGINNINGS.</p><h2>A little effort. A lot of possibility.</h2></div><div className="feature-grid">{[{ number: "01", title: "Find your spark", text: "Follow your curiosity and discover skills you want to build.", icon: "✳" }, { number: "02", title: "Make your move", text: "Take it one step at a time. Fit learning into your everyday life.", icon: "↗" }, { number: "03", title: "See yourself grow", text: "Earn points along the way and celebrate your progress.", icon: "✦" }].map((item) => <article className="feature" key={item.number}><div className="feature-top"><span>{item.number}</span><span aria-hidden="true">{item.icon}</span></div><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+        <section id="possibilities" className="closing"><div><p className="eyebrow">THIS IS JUST THE BEGINNING</p><h2>See where your curiosity takes you.</h2></div><Link href="/signup" className="button primary">Let’s get started <span aria-hidden="true">↗</span></Link></section>
       </main>
+      <footer className="site-footer"><Brand /><p>Small steps. Real progress.</p><span>© {new Date().getFullYear()} SkillsPoints</span></footer>
     </div>
   );
 }
