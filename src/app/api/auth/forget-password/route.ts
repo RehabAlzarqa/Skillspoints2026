@@ -1,47 +1,47 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
- export async function POST(request:NextRequest) {
-    
-    try{
-
-const body = await request.json();
-const {email} = body;
-if (typeof !email !=="string" || !email.trim()) {
-    return NextResponse.json(
-        { msg:"Email is required"},
-    {status: 400});
-
-    } 
-    
+export async function POST(request: NextRequest) {
+  try {
+    //نقرأ الإيميل من الطلب:
+    const { email } = await request.json();
+    //نتحقق إن الإيميل موجود وصيغته صحيحة، وإن الطلبات ما تجاوزت الحد المسموح.
+    if (!email || typeof email !== "string" || !email.includes("@")) {
+      return NextResponse.json({ msg: "Email is required" }, { status: 400 });
+    }
+    //نبحث عن حساب بهذا الإيميل في قاعدة البيانات.
     const userExist = await prisma.user.findUnique({
-        where: {email}
+      where: { email },
     });
 
-    if(!userExist) {
-        return NextResponse.json({
-            msg: "user not existe "
+    if (!userExist) {
+      return NextResponse.json(
+        {
+          msg: "user not existe ",
         },
-    {status:400})
+        { status: 400 },
+      );
     }
-  // Generate OTP
-    const otp = randomInt(0, 1_000_000).toString().padStart(6, "0");
-  // Generate OTP
-
-
-// First copy -> Hash and save it in the database
-  // step 1. Hash the OTP
-  const strongness = 10;
-  const hashedOtp = await bcrypt.hash(otp, strongness);}
-    catch(error){
-        console.error("Sign-in error:", error)
-
-    }
-    return NextResponse.json({
-        msg:"check your Email"
-    }, {
-        status:400
-    })
+    // نولّد كود OTP عشوائيًا وآمنًا.
+    const otp = randomInt(0, 1000000).toString().padStart(6, "0");
+    // نولّد كود OTP عشوائيًا وآمنًا.
+    // Hash the OTP
+    const hashedOtp = await bcrypt.hash(otp, 10);
+    // Hash the OTP
+    // save the expiry time
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    // save the expiry time
+  } catch (error) {
+    console.error("Sign-in error:", error);
+  }
+  return NextResponse.json(
+    {
+      msg: "check your Email",
+    },
+    {
+      status: 400,
+    },
+  );
 }

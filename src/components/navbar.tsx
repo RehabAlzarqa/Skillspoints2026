@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isMenuOpen, setisMenuOpen] = useState(false);
@@ -21,7 +22,7 @@ const Navbar = () => {
 
         {/* link descktop*/}
         <nav className="hidden gap-8 bg-red-500 md:flex">
-          <a href="/">Home</a>
+          <Link href="/">Home</Link>
           <a href="/courses">Micro-courses</a>
           <a href="/my-learning">My Learning</a>
           <a href="/rewards">Rewards</a>
