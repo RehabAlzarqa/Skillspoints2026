@@ -1,21 +1,17 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
-import bcrypt from 'bcrypt';
-
- export async function POST(request:NextRequest) {
-    
-    try{
-
-const body = await request.json();
-const {email} = body;
-if (typeof !email !=="string" || !email.trim()) {
-    return NextResponse.json(
-        { msg:"Email is required"},
-    {status: 400});
-
-    } 
-    
+import bcrypt from "bcrypt";
+import { Resend } from "resend";
+export async function POST(request: NextRequest) {
+  try {
+    //نقرأ الإيميل من الطلب:
+    const { email } = await request.json();
+    //نتحقق إن الإيميل موجود وصيغته صحيحة، وإن الطلبات ما تجاوزت الحد المسموح.
+    if (!email) {
+      return NextResponse.json({ msg: "Email is required" }, { status: 400 });
+    }
+    //نبحث عن حساب بهذا الإيميل في قاعدة البيانات.
     const userExist = await prisma.user.findUnique({
         where: {email}
     });
@@ -26,22 +22,27 @@ if (typeof !email !=="string" || !email.trim()) {
         },
     {status:400})
     }
-  // Generate OTP
-    const otp = randomInt(0, 1_000_000).toString().padStart(6, "0");
-  // Generate OTP
+    // نولّد كود OTP عشوائيًا وآمنًا.
+    const otp = randomInt(0, 1000000).toString().padStart(6, "0");
+    // نولّد كود OTP عشوائيًا وآمنًا.
+    // Hash the OTP
+    const hashedOtp = await bcrypt.hash(otp, 10);
+    // Hash the OTP
+    // save the expiry time
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    // save the expiry time
+    await prisma.oTP.create({
+      data: {
+        otpHashed: hashedOtp,
+        email: userExist.email,
+        expiresAt: otpExpiry,
+        attemptCount: 0,
+      },
+    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
+  } catch (error) {
+    console.error("forget-password error:", error);
 
-
-// First copy -> Hash and save it in the database
-  // step 1. Hash the OTP
-  const strongness = 10;
-  const hashedOtp = await bcrypt.hash(otp, strongness);}
-    catch(error){
-        console.error("Sign-in error:", error)
-
-    }
-    return NextResponse.json({
-        msg:"check your Email"
-    }, {
-        status:400
-    })
+    return NextResponse.json({ msg: "Something went wrong" }, { status: 500 });
+  }
 }
