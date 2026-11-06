@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
-import { Geist } from "next/font/google";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Skillspoints",
@@ -15,7 +13,14 @@ type Props = {
 };
 
 const layout = (props: Props) => {
-  return <div className="">{props.children}</div>;
+  return (
+    <html lang="en">
+      <body>
+        {props.children}
+        <Toaster />
+      </body>
+    </html>
+  );
 };
 
 export default layout;

@@ -23,6 +23,7 @@ model User {
   MicroCourse       MicroCourse[]
   MyLearning        MyLearning[]
   MyRewards         MyRewards[]
+  tokens            Token[]
 }
 
 model MicroCourse {
@@ -80,4 +81,18 @@ model MyRewards {
   @@index([userId], map: "RewardHistory_userId_idx")
   @@index([rewardId])
   @@index([userId])
+}
+
+model Token {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  token     String
+  purpose   String
+  expiresAt DateTime
+  attempts  Int       @default(0)
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [idUser])
+
+  @@index([userId, purpose])
 }

@@ -9,7 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: Arial, Helvetica, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: var(--font-cousine), ui-monospace, SFMono-Regular, monospace;
