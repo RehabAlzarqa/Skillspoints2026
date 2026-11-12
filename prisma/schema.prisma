@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL_STAGING")
-  directUrl = env("DIRECT_URL_STAGING")
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -22,20 +22,20 @@ model User {
   MicroCourse       MicroCourse[]
   MyLearning        MyLearning[]
   MyRewards         MyRewards[]
-  tokens            Token[]
 }
 
 model MicroCourse {
-  title         String
-  description   String?
-  createdAt     DateTime     @default(now())
-  authorId      Int
-  idMicroCourse Int          @id @default(autoincrement())
-  category      String?
-  videoUrl      String?
-  pointsReward  Int          @default(0)
-  User          User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
-  MyLearning    MyLearning[]
+  title           String
+  description     String?
+  createdAt       DateTime     @default(now())
+  authorId        Int
+  idMicroCourse   Int          @id @default(autoincrement())
+  category        String?
+  videoUrl        String?
+  pointsReward    Int          @default(0)
+  durationMinutes Int?
+  User            User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
+  MyLearning      MyLearning[]
 
   @@index([authorId], map: "MicroCourse_creatorId_idx")
   @@index([authorId])
@@ -83,15 +83,16 @@ model MyRewards {
 }
 
 model Token {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  token     String
-  purpose   String
-  expiresAt DateTime
-  attempts  Int       @default(0)
-  usedAt    DateTime?
+  userId Int    @id
+  token  String @unique
+}
 
-  user User @relation(fields: [userId], references: [idUser])
+model Otp {
+  email        String   @id
+  otpHashed    String
+  expiresAt    DateTime @db.Timestamptz(6)
+  attemptCount Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
 
-  @@index([userId, purpose])
+  @@map("OTP")
 }
