@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!userExist) {
       return NextResponse.json(
         {
-          msg: "user not existe ",
+          msg: "If an account exists, an OTP code has been sent. Please check your email.",
         },
         { status: 400 },
       );
@@ -34,11 +34,11 @@ export async function POST(request: NextRequest) {
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
     // save the expiry time
   } catch (error) {
-    console.error("Sign-in error:", error);
+    console.error("Forgot-password error:", error);
   }
   return NextResponse.json(
     {
-      msg: "check your Email",
+      msg: "If an account exists, an OTP code has been sent. Please check your email.",
     },
     {
       status: 400,

@@ -26,12 +26,12 @@ const ForgetPssword = () => {
         });
         const data = await response.json();
         if (response.ok) {
-          toast.success(data.msg);
+         toast.success(data.msg);
         } else {
           toast.error(data.msg);
         }
       } catch {
-        toast.error("Unable to sign in. Please try again.");
+        toast.error("Unable to send the OTP code. Please try again.");
       }
     },
   });
@@ -83,7 +83,7 @@ const ForgetPssword = () => {
                   type="submit"
                   className="mt-2 h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
                 >
-                  Send otp code
+                  Send OTP code
                 </button>
               </form>
             </div>
