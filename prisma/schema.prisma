@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url       = env("DATABASE_URL_STAGING")
+  directUrl = env("DIRECT_URL_STAGING")
 }
 
 model User {
@@ -19,7 +19,6 @@ model User {
   jobTitle          String?
   profilePicture    String?
   profilePictureUrl String?
-  token             String?
   MicroCourse       MicroCourse[]
   MyLearning        MyLearning[]
   MyRewards         MyRewards[]

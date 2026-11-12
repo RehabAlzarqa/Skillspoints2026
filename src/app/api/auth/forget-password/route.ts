@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { randomInt } from "node:crypto";
 import bcrypt from "bcrypt";
-
 export async function POST(request: NextRequest) {
   try {
     //نقرأ الإيميل من الطلب:
