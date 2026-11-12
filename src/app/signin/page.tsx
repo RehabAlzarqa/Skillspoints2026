@@ -1,9 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import bcrypt from 'bcrypt';
-
+import { toast } from "sonner";
 
 const Page = () => {
   const formLogin = useFormik({
@@ -18,26 +18,29 @@ const Page = () => {
       password: string().required("Password is required"),
     }),
     onSubmit: async (values) => {
-      const  {email, password} = values;
+      const { email, password } = values;
 
-      // connect the page to signup api
-      const response = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      const data = await response.json();
-          if (response.ok) {
-            alert(data.msg);
-          } else {
-            alert(data.msg);
-    }
-          // connect the page to signup api
+      try {
+        const response = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
+        const data = await response.json();
 
+        if (response.ok) {
+          toast.success(data.msg);
+        } else {
+          toast.error(data.msg);
+        }
+      } catch {
+        toast.error("Unable to sign in. Please try again.");
+      }
     },
+    // connect the page to signup api
   });
 
   const fields = [
@@ -58,52 +61,88 @@ const Page = () => {
   ];
 
   return (
-    <main className="min-h-screen bg-red-400- px-4 py-8 md:px-8 xl:px-12">
+    <main className="min-h-screen bg-[#F5F8FF] px-4 py-30 md:px-8 xl:px-12">
       <div className="mx-auto grid max-w-6xl gap-6 rounded-[32px] bg-white p-4 shadow-[0_18px_50px_rgba(7,27,61,0.08)] lg:grid-cols-[1.08fr_0.92fr] lg:p-6">
-        <section className="bg-blue-900- p-4 w-auto">
-          <div className=" flex flex-col items-center justify-center">
-            <img src="images/logo.png" alt="Logo"
-            width="200"
-            height="200"
+        <section className="flex flex-col justify-center rounded-[28px] bg-white p-6 md:p-8">
+          <Link href="/" className="mb-6 inline-block self-center">
+            <img
+              src="/images/Logo.png"
+              alt="SkillsPoints"
+              className="h-auto w-24 object-contain"
             />
-          </div>
-          
+          </Link>
 
-          <form className="flex flex-col gap-5" onSubmit={formLogin.handleSubmit}> 
+          <div className="mb-6"></div>
+
+          <form
+            className="flex flex-col gap-5"
+            onSubmit={formLogin.handleSubmit}
+          >
             {fields.map((field, index) => (
-                <div key={index} >
-           <label htmlFor={field.name}
-            className=" bg-red-400- text-stone-950 text-[22px] px-2 py-5 ">{field.label}</label>
-           <input 
-           type={field.type}
-           name={field.name}
-           id={field.name}
-           placeholder={field.placeholder}
-           autoComplete={field.autoComplete}
-           value={formLogin.values[field.name]}
-           onChange={formLogin.handleChange}
-           onBlur={formLogin.handleBlur}
-           className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2"
-            />
-              {formLogin.touched[field.name] && formLogin.errors[field.name] &&
-            <span className="text-rose-600"> {formLogin.errors[field.name]}
-            
-            </span>
-            }
-
-           </div>
+              <div key={index}>
+                <label
+                  htmlFor={field.name}
+                  className="mb-2 block text-sm font-semibold"
+                >
+                  {field.label}
+                </label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  id={field.name}
+                  placeholder={field.placeholder}
+                  autoComplete={field.autoComplete}
+                  value={formLogin.values[field.name]}
+                  onChange={formLogin.handleChange}
+                  onBlur={formLogin.handleBlur}
+                  className="h-12 w-full rounded-xl border border-[#D8DEE9] bg-white px-4 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:border-[#4788F9] focus:ring-2 focus:ring-[#E8F1FF]"
+                />
+                {formLogin.touched[field.name] &&
+                  formLogin.errors[field.name] && (
+                    <span className="text-rose-600">
+                      {" "}
+                      {formLogin.errors[field.name]}
+                    </span>
+                  )}
+              </div>
             ))}
-            <button type="submit" className="mt-2 h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]">
-              Sign In
+            <button
+              type="submit"
+              disabled={formLogin.isSubmitting}
+              className="mt-2 h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
+            >
+              {formLogin.isSubmitting ? (
+                <span className="inline-flex items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+                  />
+                  Loading...
+                </span>
+              ) : (
+                "Sign In"
+              )}{" "}
             </button>
           </form>
+
+          <p className="mt-5 text-center text-sm leading-5 text-[#56637A]">
+            By continuing you agree to your company&apos;s acceptable use policy
+          </p>
+          <Link
+            href="/forget-password"
+            className="mt-4 self-center text-sm font-semibold text-[#4788F9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
+          >
+            Forget password?
+          </Link>
         </section>
 
-  <section>
-    <div className="flex ">
-      <img src="images/LogoAuth.png" alt="Sign Up" />
-    </div>
-    </section>       
+        <section className="hidden flex-col items-center justify-center rounded-[28px] bg-[#E8F1FF] px-3 py-3 text-center lg:flex">
+          <img
+            src="/images/LogoAuth.png"
+            alt="Learners developing their skills together"
+            className="mt-3 h-auto max-h-[440px] w-full max-w-[480px] object-contain"
+          />
+        </section>
       </div>
     </main>
   );
