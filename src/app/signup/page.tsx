@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import logo from "../../../public/images/Logo.png";
 import { useFormik } from "formik";
 import { object, string, ref } from "yup";
 import { toast } from "sonner";
@@ -108,16 +110,24 @@ const Page = () => {
   ] as const;
 
   return (
-    <main className="min-h-screen bg-[#F5F8FF] px-4 py-15 md:px-8 xl:px-12">
-      <div className="mx-auto grid max-w-6xl gap-6 rounded-[32px] bg-white p-4 shadow-[0_18px_50px_rgba(7,27,61,0.08)] lg:grid-cols-[1.08fr_0.92fr]">
+    <main className="flex min-h-dvh items-center bg-[#F5F8FF] px-4 py-4 md:px-8 xl:px-12">
+      <div className="mx-auto grid w-full max-w-6xl gap-6 rounded-[32px] bg-white p-4 shadow-[0_18px_50px_rgba(7,27,61,0.08)] lg:grid-cols-[1.08fr_0.92fr]">
         <section className="rounded-[28px] bg-white p-3 md:px-6 md:py-3">
           <Link
             href="/"
-            className="mb-3 inline-block text-2xl font-bold"
-          ></Link>
+            className="mx-auto mb-3 block w-fit"
+            aria-label="Skillspoints home"
+          >
+            <Image
+              src={logo}
+              alt="Skillspoints"
+              className="h-12 w-40 object-contain"
+              priority
+            />
+          </Link>
 
-          <div className="mb-4">
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <div className="mb-3">
+            <h1 className="text-xl font-bold tracking-tight md:text-3xl">
               Create your account
             </h1>
           </div>
@@ -134,7 +144,7 @@ const Page = () => {
               const showError = Boolean(form.touched[fieldKey] && error);
 
               return (
-                <div key={field.fieldName} className="flex flex-col gap-1 py-1">
+                <div key={field.fieldName} className="flex flex-col gap-1">
                   <label
                     htmlFor={field.fieldName}
                     className="text-sm font-semibold "
@@ -174,7 +184,7 @@ const Page = () => {
             <button
               type="submit"
               disabled={form.isSubmitting}
-              className="mt-10 h-10 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
+              className="mt-3 h-10 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
             >
               {form.isSubmitting ? (
                 <span className="inline-flex items-center gap-2 ">
