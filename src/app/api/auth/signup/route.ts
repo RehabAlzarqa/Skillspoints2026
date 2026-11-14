@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       lastName,
       password: hash,
       totalPoints: 0,
-    },
+    } as any,
   });
 
   return NextResponse.json(
