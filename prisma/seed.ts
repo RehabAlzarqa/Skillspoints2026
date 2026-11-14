@@ -10,7 +10,7 @@ async function main() {
       lastName: "User",
       email: "test@example.com",
       password: "hashed-password",
-    },
+    } as any,
   });
 
   console.log("🌱 Seed completed (no data added).");
