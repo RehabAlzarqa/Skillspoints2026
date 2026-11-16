@@ -10,6 +10,8 @@ async function main() {
       lastName: "User",
       email: "test@example.com",
       password: "hashed-password",
+      one_staging: "one_staging",
+      two_staging: "two_staging",
     } as any,
   });
 
