@@ -5,7 +5,7 @@ import { object, string } from "yup";
 import { toast } from "sonner";
 
 const ForgetPssword = () => {
-  const formForgetPssword = useFormik({
+  const form = useFormik({
     initialValues: {
       email: "",
     },
@@ -62,7 +62,7 @@ const ForgetPssword = () => {
               <h1 className="mb-2 block text-m ">Email address</h1>
 
               <form
-                onSubmit={formForgetPssword.handleSubmit}
+                onSubmit={form.handleSubmit}
                 className="w-full bg-amber-300-"
               >
                 {fields.map((field, index) => (
@@ -75,11 +75,15 @@ const ForgetPssword = () => {
                       placeholder={field.placeholder}
                       id={field.name}
                       autoComplete={field.autoComplete}
-                      value={formForgetPssword.values.email}
-                      onChange={formForgetPssword.handleChange}
-                      onBlur={formForgetPssword.handleBlur}
-                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2"
+                      value={form.values.email}
+                      onChange={form.handleChange}
+                      onBlur={form.handleBlur}
+                      onError=""
+                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 bg-red-800"
                     />
+                    <span className="text-red-500 text-sm bg-amber-800">
+                      {form.errors.email}
+                    </span>
                   </div>
                 ))}
                 <button

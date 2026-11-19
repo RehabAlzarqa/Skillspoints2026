@@ -135,7 +135,7 @@ const Page = () => {
           <form
             onSubmit={form.handleSubmit}
             noValidate
-            className="flex flex-col gap-2"
+            className=" w- full flex flex-col gap-5"
           >
             {fields.map((field) => {
               const fieldKey =
