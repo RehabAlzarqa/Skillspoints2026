@@ -78,6 +78,7 @@ const Page = () => {
       type: "text",
       label: "First Name",
       autoComplete: "given-name",
+      error: form.errors.firstName,
     },
     {
       fieldName: "lastName",
@@ -85,6 +86,7 @@ const Page = () => {
       type: "text",
       label: "Last Name",
       autoComplete: "family-name",
+      error: form.errors.lastName,
     },
     {
       fieldName: "email",
@@ -92,6 +94,7 @@ const Page = () => {
       type: "email",
       label: "Email",
       autoComplete: "email",
+      error: form.errors.email,
     },
     {
       fieldName: "password",
@@ -99,6 +102,7 @@ const Page = () => {
       type: "password",
       label: "Password",
       autoComplete: "new-password",
+      error: form.errors.password,
     },
     {
       fieldName: "confirmPassword",
@@ -106,6 +110,7 @@ const Page = () => {
       type: "password",
       label: "Confirm Password",
       autoComplete: "new-password",
+      error: form.errors.confirmPassword,
     },
   ] as const;
 
@@ -138,46 +143,28 @@ const Page = () => {
             className=" w- full flex flex-col gap-5"
           >
             {fields.map((field) => {
-              const fieldKey =
-                field.fieldName as keyof typeof form.initialValues;
-              const error = form.errors[fieldKey];
-              const showError = Boolean(form.touched[fieldKey] && error);
-
               return (
-                <div key={field.fieldName} className="flex flex-col gap-1">
-                  <label
-                    htmlFor={field.fieldName}
-                    className="text-sm font-semibold "
-                  >
-                    {field.label}
-                  </label>
-
-                  <input
-                    {...form.getFieldProps(field.fieldName)}
-                    id={field.fieldName}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    autoComplete={field.autoComplete}
-                    aria-invalid={showError}
-                    aria-describedby={
-                      showError ? `${field.fieldName}-error` : undefined
-                    }
-                    className={`h-10 w-full rounded-xl border bg-white px-4 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 ${
-                      showError
-                        ? "border-red-500 focus:ring-red-100"
-                        : "border-[#D8DEE9] focus:border-[#4788F9] focus:ring-[#E8F1FF]"
-                    }`}
-                  />
-
-                  {showError && (
-                    <p
-                      id={`${field.fieldName}-error`}
-                      className="text-sm text-red-600"
+                <>
+                  <div key={field.fieldName} className="flex flex-col gap-1">
+                    <label
+                      htmlFor={field.fieldName}
+                      className="text-sm font-semibold "
                     >
-                      {error}
-                    </p>
-                  )}
-                </div>
+                      {field.label}
+                    </label>
+
+                    <input
+                      {...form.getFieldProps(field.fieldName)}
+                      id={field.fieldName}
+                      type={field.type}
+                      placeholder={field.placeholder}
+                      autoComplete={field.autoComplete}
+                      data-error={Boolean(field.error)}
+                      className="border border-gray-300 data-[error=true]:border-red-500 rounded-2xl p-2"
+                    />
+                  </div>
+                  <span className="text-sm text-red-500">{field.error}</span>
+                </>
               );
             })}
 

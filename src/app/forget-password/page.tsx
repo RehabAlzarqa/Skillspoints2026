@@ -42,7 +42,7 @@ const ForgetPssword = () => {
       type: "email",
       label: "Email",
       autoComplete: "email",
-      error: "email",
+      error: form.errors.email,
     },
   ];
   return (
@@ -78,11 +78,13 @@ const ForgetPssword = () => {
                       value={form.values.email}
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      onError=""
-                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 bg-red-800"
+                      data-error={Boolean(field.error)}
+                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 bg-[#EF4444]
+                   
+                      data-[error=true]:border-red-500"
                     />
-                    <span className="text-red-500 text-sm bg-amber-800">
-                      {form.errors.email}
+                    <span className="text-red-500 text-sm bg-amber-800-">
+                      {field.error}
                     </span>
                   </div>
                 ))}
