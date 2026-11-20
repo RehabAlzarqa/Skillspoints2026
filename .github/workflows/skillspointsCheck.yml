@@ -1,17 +1,23 @@
-# The name of this workflow
 name: SkillsPoints Checks
 
-# Run when I push code
-# When the workflow should run
 on:
   push:
   pull_request:
   workflow_dispatch:
 
-# The jobs to execute
+permissions:
+  contents: read
+
 jobs:
   check:
+    name: Check application
     runs-on: ubuntu-latest
+
+    # Dummy local-style URLs used only while building the application.
+    # This job does not execute database migrations.
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/skillspoints_ci?schema=public
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/skillspoints_ci?schema=public
 
     steps:
       - name: Get project code
@@ -20,24 +26,59 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "24"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      
-        
       - name: Check code with ESLint
-        run: npm run lint 
+        run: npm run lint
 
-      - name:  Run build 
+      - name: Run tests
+        run: npm run test -- --run
+
+      - name: Run build
         run: npm run build
-        
+
       - name: Check production dependencies
         run: npm audit --omit=dev --audit-level=high
 
       - name: Report vulnerabilities in all dependencies
         continue-on-error: true
         run: npm audit --audit-level=high
-      # - name: Run tests
-      #   run: npm test -- --run
+
+  deploy_staging_database:
+    name: Deploy migrations to Staging
+    needs: check
+    runs-on: ubuntu-latest
+
+    # Run only after code is pushed or merged into develop.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+
+    concurrency:
+      group: staging-database-migrations
+      cancel-in-progress: false
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_STAGING }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL_STAGING }}
+
+    steps:
+      - name: Get project code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply pending migrations
+        run: npx prisma migrate deploy
+
+      - name: Verify migration status
+        run: npx prisma migrate status
