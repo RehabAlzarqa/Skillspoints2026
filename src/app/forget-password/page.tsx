@@ -92,7 +92,17 @@ const ForgetPssword = () => {
                   type="submit"
                   className="mt-2 h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
                 >
-                  Send OTP Code
+                  {form.isSubmitting ? (
+                    <span className="inline-flex items-baseline gap-2">
+                      <span
+                        aria-hidden="true"
+                        className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+                      />
+                      Loading...
+                    </span>
+                  ) : (
+                    "Send Otp"
+                  )}{" "}
                 </button>
               </form>
             </div>
