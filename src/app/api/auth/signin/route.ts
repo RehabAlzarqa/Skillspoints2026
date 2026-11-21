@@ -23,58 +23,51 @@ import jwt from 'jsonwebtoken';
 
 
 //write the controller funcation
- export async function POST(request:NextRequest) {
-//collect the info form body
-const body = await request.json()
-//extract the user info from the body
-const {email, password} = body;
-//check the info that we need to login if it is exist 
- if (!email || !password) {
-   return NextResponse.json(
-     { msg: "All fields are required" },
-     { status: 400 },
+ export async function POST(request: NextRequest) {
+   //collect the info form body
+   const body = await request.json();
+   //extract the user info from the body
+   const { email, password } = body;
+   //check the info that we need to login if it is exist
+   if (!email || !password) {
+     return NextResponse.json(
+       { msg: "All fields are required" },
+       { status: 400 },
+     );
+   }
+   // check the user if it is existe
+   const userExistes = await prisma.user.findUnique({
+     where: { email },
+   });
+
+   //validation if the info  of the user existe or no
+
+   if (!userExistes) {
+     return NextResponse.json({ msg: "user not existe" }, { status: 400 });
+   }
+
+   const isPasswordCorrect = await bcrypt.compare(
+     password,
+     userExistes.password,
    );
- }
-// check the user if it is existe
-const userExistes = await prisma.user.findUnique({
-   where: {email} 
-})
 
-//validation if the info  of the user existe or no
+   if (!isPasswordCorrect) {
+     return NextResponse.json({ msg: "Invalid credentials" }, { status: 401 });
+   }
+   const JWT_SECRET = process.env.JWT_SECRET;
+   if (!JWT_SECRET) {
+     return NextResponse.json(
+       { msg: "Server configuration error" },
+       { status: 500 },
+     );
+   }
+   //sign() from NPM recive 3 arguments Payload , Secret, Options is a function that will create a token for the user
+   const token = jwt.sign({ userId: userExistes.idUser }, JWT_SECRET, {
+     expiresIn: "1h",
+   });
 
-if (!userExistes) {
-   return NextResponse.json({ msg: "user not existe" }, { status: 400 });
-}
-
-const isPasswordCorrect = await bcrypt.compare(
-  password,
-  userExistes.password
-);
-
-if (!isPasswordCorrect) {
-  return NextResponse.json(
-    { msg: "Invalid credentials" },
-    { status: 401 }
-  );
-}
-
-const JWT_PASSWORD = process.env.JWT_PASSWORD;
-
-if (!JWT_PASSWORD) {
-  return NextResponse.json(
-    { msg: "Server configuration error" },
-    { status: 500 }
-  );
-}
-
-const token = jwt.sign(
-  { userId: userExistes.idUser },
-  JWT_PASSWORD,
-  { expiresIn: "1h" }
-);
-
- return NextResponse.json({
-    msg: "Login successful",
-    token: token
- });
+   return NextResponse.json({
+     msg: "Login successful",
+     token: token,
+   });
  }
