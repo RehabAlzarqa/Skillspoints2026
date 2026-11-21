@@ -7,7 +7,7 @@ type User = {
   jobTitle: string;
   profilePictureUrl: string;
   totalPoints: number;
-}
+};
 
 type MicroCourse = {
   id: string;
@@ -18,16 +18,15 @@ type MicroCourse = {
   category: string;
   videoUrl: string;
   pointsReward: number;
-}
+};
 
 type MyLearning = {
   id: string;
   userId: string;
   courseId: string;
   startDate: string;
-  status: 'in-progress' | 'completed'
-}
-
+  status: "in-progress" | "completed";
+};
 
 type Reward = {
   id: string;
@@ -36,12 +35,24 @@ type Reward = {
   pointsCost: number;
   availableQuantity: number;
   imageUrl?: string;
-}
-
+};
 
 type MyRewards = {
   id: string;
   userId: string;
   rewardId: string;
   redeemedAt: string;
-}
+};
+
+type Token = {
+  userId: number;
+  token: string;
+};
+
+type OTP = {
+  email: string;
+  otpHashed: string;
+  expiresAt: Date;
+  attemptCount: number;
+  createdAt: Date;
+};
