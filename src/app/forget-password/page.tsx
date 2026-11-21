@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { toast } from "sonner";
 
 const ForgetPssword = () => {
-  const formForgetPssword = useFormik({
+  const form = useFormik({
     initialValues: {
       email: "",
     },
@@ -42,7 +43,7 @@ const ForgetPssword = () => {
       type: "email",
       label: "Email",
       autoComplete: "email",
-      error: "email",
+      error: form.errors.email,
     },
   ];
   return (
@@ -59,15 +60,26 @@ const ForgetPssword = () => {
           </div>
           <div className="w-full">
             <div className="w-full p-5 flex flex-col gap-2 p-[20px] ">
-              <h1 className="mb-2 block text-m ">Email address</h1>
+              <h1 className="text-2xl font-semibold text-[#071B3D]">
+                Forgot your password?
+              </h1>
+              <p className="mb-2 text-sm leading-5 text-[#56637A]">
+                Enter your email address and we&apos;ll send you a one-time code
+                to reset your password.
+              </p>
 
               <form
-                onSubmit={formForgetPssword.handleSubmit}
+                onSubmit={form.handleSubmit}
                 className="w-full bg-amber-300-"
               >
                 {fields.map((field, index) => (
                   <div key={index}>
-                    <label htmlFor={field.name} className=""></label>
+                    <label
+                      htmlFor={field.name}
+                      className="mb-2 block text-sm font-semibold text-[#071B3D]"
+                    >
+                      {field.label}
+                    </label>
 
                     <input
                       type={field.type}
@@ -75,11 +87,17 @@ const ForgetPssword = () => {
                       placeholder={field.placeholder}
                       id={field.name}
                       autoComplete={field.autoComplete}
-                      value={formForgetPssword.values.email}
-                      onChange={formForgetPssword.handleChange}
-                      onBlur={formForgetPssword.handleBlur}
-                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2"
+                      value={form.values.email}
+                      onChange={form.handleChange}
+                      onBlur={form.handleBlur}
+                      data-error={Boolean(field.error)}
+                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 bg-[#EF4444]
+                   
+                      data-[error=true]:border-red-500"
                     />
+                    <span className="text-red-500 text-sm bg-amber-800-">
+                      {field.error}
+                    </span>
                   </div>
                 ))}
                 <button
@@ -99,6 +117,12 @@ const ForgetPssword = () => {
                   )}{" "}
                 </button>
               </form>
+              <Link
+                href="/signin"
+                className="mt-4 self-center text-sm font-semibold text-[#4788F9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
+              >
+                Back to Sign in
+              </Link>
             </div>
           </div>
         </div>
