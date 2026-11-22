@@ -4,12 +4,19 @@ import { randomInt } from "node:crypto";
 import bcrypt from "bcrypt";
 import { Resend } from "resend";
 export async function POST(request: NextRequest) {
+  // 2xx -  user success
+  // 4xx -  user errors
+  // 5xx -  server/backend errors
+
   try {
     //نقرأ الإيميل من الطلب:
     const { email } = await request.json();
     //نتحقق إن الإيميل موجود وصيغته صحيحة، وإن الطلبات ما تجاوزت الحد المسموح.
     if (!email || typeof email !== "string" || !email.includes("@")) {
-      return NextResponse.json({ msg: "Email is required" }, { status: 400 });
+      return NextResponse.json(
+        { msg: "Email is required", error: true },
+        { status: 400 },
+      );
     }
     //نبحث عن حساب بهذا الإيميل في قاعدة البيانات.
     const userExist = await prisma.user.findUnique({
@@ -19,9 +26,10 @@ export async function POST(request: NextRequest) {
     if (!userExist) {
       return NextResponse.json(
         {
+          error: false,
           msg: "If an account exists, an OTP code has been sent. Please check your email.",
         },
-        { status: 200 },
+        { status: 404 },
       );
     }
     // نولّد كود OTP عشوائيًا وآمنًا.
@@ -35,11 +43,13 @@ export async function POST(request: NextRequest) {
     // save the expiry time
 
     //Store the OTP hash, expiration time, and attempt count, linked to the user.
+
+    // insert -> create or put smth
+    // upsert -> insert + update
     await prisma.otp.upsert({
       where: {
         email: userExist.email,
       },
-
       update: {
         otpHashed: hashedOtp,
         expiresAt: otpExpiry,
@@ -67,20 +77,38 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      return NextResponse.json({
-        error: "Failed to send OTP email. Please try again later",
-      });
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        {
+          error: true,
+          msg:
+            error?.message ||
+            "Failed to send OTP email. Please try again later",
+        },
+        { status: 500 },
+      );
     }
     //Send the original OTP to the user’s email.
+
+    // Return a success message.
+    return NextResponse.json(
+      {
+        error: false,
+        msg: "An OTP code has been sent to your gmail.",
+      },
+      {
+        status: 201,
+      },
+    );
+    // Return a success message.
   } catch (error) {
-    console.error("Forgot-password error:", error);
+    return NextResponse.json(
+      {
+        msg: error?.message || "Error sending OTP to your email",
+      },
+      {
+        status: 500,
+      },
+    );
   }
-  return NextResponse.json(
-    {
-      msg: "If an account exists, an OTP code has been sent. Please check your email.",
-    },
-    {
-      status: 200,
-    },
-  );
 }
