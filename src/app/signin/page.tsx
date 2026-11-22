@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const formLogin = useFormik({
     initialValues: {
       email: "",
@@ -33,6 +35,7 @@ const Page = () => {
 
         if (response.ok) {
           toast.success(data.msg);
+          router.push("/dashboard");
         } else {
           toast.error(data.msg);
         }
