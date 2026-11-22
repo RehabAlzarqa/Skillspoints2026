@@ -66,8 +66,8 @@ import jwt from 'jsonwebtoken';
      expiresIn: "1h",
    });
 
-   return NextResponse.json({
-     msg: "Login successful",
-     token: token,
-   });
+ return NextResponse.json({
+    msg: "Login successful",
+    token: token
+ });
  }
