@@ -30,10 +30,10 @@ const body = await request.json()
 const {email, password} = body;
 //check the info that we need to login if it is exist 
  if (!email || !password) {
-    return NextResponse.json({
-        msg:" all fields are required",
-        status: 409
-    })
+   return NextResponse.json(
+     { msg: "All fields are required" },
+     { status: 400 },
+   );
  }
 // check the user if it is existe
 const userExistes = await prisma.user.findUnique({
@@ -43,10 +43,7 @@ const userExistes = await prisma.user.findUnique({
 //validation if the info  of the user existe or no
 
 if (!userExistes) {
-    return NextResponse.json({
-        msg: "user not existe",
-        status: 400
-    })
+   return NextResponse.json({ msg: "user not existe" }, { status: 400 });
 }
 
 const isPasswordCorrect = await bcrypt.compare(

@@ -19,23 +19,23 @@ model User {
   jobTitle          String?
   profilePicture    String?
   profilePictureUrl String?
-  token             String?
   MicroCourse       MicroCourse[]
   MyLearning        MyLearning[]
   MyRewards         MyRewards[]
 }
 
 model MicroCourse {
-  title         String
-  description   String?
-  createdAt     DateTime     @default(now())
-  authorId      Int
-  idMicroCourse Int          @id @default(autoincrement())
-  category      String?
-  videoUrl      String?
-  pointsReward  Int          @default(0)
-  User          User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
-  MyLearning    MyLearning[]
+  title           String
+  description     String?
+  createdAt       DateTime     @default(now())
+  authorId        Int
+  idMicroCourse   Int          @id @default(autoincrement())
+  category        String?
+  videoUrl        String?
+  pointsReward    Int          @default(0)
+  durationMinutes Int?
+  User            User         @relation(fields: [authorId], references: [idUser], map: "MicroCourse_creatorId_fkey")
+  MyLearning      MyLearning[]
 
   @@index([authorId], map: "MicroCourse_creatorId_idx")
   @@index([authorId])
@@ -80,4 +80,19 @@ model MyRewards {
   @@index([userId], map: "RewardHistory_userId_idx")
   @@index([rewardId])
   @@index([userId])
+}
+
+model Token {
+  userId Int    @id
+  token  String @unique
+}
+
+model Otp {
+  email        String   @id
+  otpHashed    String
+  expiresAt    DateTime @db.Timestamptz(6)
+  attemptCount Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("OTP")
 }
