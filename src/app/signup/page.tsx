@@ -6,8 +6,10 @@ import logo from "../../../public/images/Logo.png";
 import { useFormik } from "formik";
 import { object, string, ref } from "yup";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const form = useFormik({
     initialValues: {
       firstName: "",
@@ -61,6 +63,7 @@ const Page = () => {
 
         if (response.ok) {
           toast.success(data.message);
+          router.push("/signin");
         } else {
           toast.error(data.message);
         }
