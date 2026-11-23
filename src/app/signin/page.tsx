@@ -123,7 +123,7 @@ const Page = () => {
             </button>
           </form>
           <p className="mt-5 text-center text-sm leading-5 text-[#56637A] flex justify-center gap-2">
-            Don't have an account? {""}
+            Don&apos;t have an account? {""}
             <Link
               href="/signup"
               className=" self-center text-sm font-semibold text-[#4788F9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
