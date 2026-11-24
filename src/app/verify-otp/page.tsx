@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -66,7 +67,7 @@ const form = useFormik({
           Enter the 6-digit verification code from your password reset email.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        <form onSubmit={form.handleSubmit} className="mt-8 space-y-5">
           <div>
             <label
               htmlFor="verification-code"
@@ -76,7 +77,7 @@ const form = useFormik({
             </label>
             <input
               id="verification-code"
-              name="code"
+              name="otpCode"
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
@@ -86,7 +87,11 @@ const form = useFormik({
               aria-describedby="code-instructions"
               title="Enter a 6-digit verification code"
               placeholder="000000"
-              className="h-14 w-full rounded-xl border border-[#D8E1EF] bg-white px-4 text-center text-2xl tracking-[0.4em] outline-none transition placeholder:text-[#A2AEC0] focus:border-[#4788F9] focus:ring-2 focus:ring-[#4788F9]/25"
+              value={form.values.otpCode}
+              onChange={form.handleChange}
+              data-error={Boolean(form.errors.otpCode)}
+              className="h-14 w-full rounded-xl border border-[#D8E1EF] bg-white px-4 text-center text-2xl tracking-[0.4em] outline-none transition placeholder:text-[#A2AEC0] focus:border-[#4788F9] focus:ring-2 focus:ring-[#4788F9]/25
+               data-[error=true]:border-red-500"
             />
           </div>
 
