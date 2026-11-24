@@ -4,60 +4,41 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { object, string } from "yup";
+import { useState, type FormEvent } from "react";
 
-const VerifyForgetPassword = () => {
-  const router = useRouter();
-
-  const form = useFormik({
-    initialValues: {
-      email: "",
-      otpCode: "",
-    },
-    validationSchema: object({
-      email: string()
-        .required("Email is required")
-        .email("Enter a valid email address"),
-      otpCode: string()
-        .required("Enter the verification code")
-        .matches(/^[0-9]{6}$/, "Enter exactly 6 digits"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const email = values.email; // connect the page to forget-password api
-        const response = await fetch("/api/auth/forget-password", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          toast.success(data.msg || "Code verified successfully");
-          router.push("/reset-password");
-        } else {
-          toast.error(data.msg || "The verification code is invalid");
-        }
-      } catch {
-        toast.error("Unable to verify the OTP code. Please try again.");
+const VerifyForgetPassword = () => {};
+const router = useRouter();
+const form = useFormik({
+  initialValues: {
+    email: "",
+  },
+  validationSchema: object({
+    email: string()
+      .required("Email is required")
+      .email("Enter a valid email address"),
+  }),
+  onSubmit: async (values) => {
+    try {
+      const email = values.email; // connect the page to forget-password api
+      const response = await fetch("/api/auth/forget-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.msg);
+        router.push("/verify-otp");
+      } else {
+        toast.error(data.msg);
       }
-    },
-  });
-  const fields = [
-    {
-      name: "email",
-      placeholder: "Enter your email address",
-      type: "email",
-      label: "Email",
-      autoComplete: "email",
-      error: form.errors.email,
-    },
-  ];
-
-
+    } catch {
+      toast.error("Unable to send the OTP code. Please try again.");
+    }
+  },
+});
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f5faff] bg-[radial-gradient(ellipse_at_top_left,#dbeafe,transparent_50%),radial-gradient(ellipse_at_bottom_right,#dbeafe,transparent_50%)] px-4 py-10">
       <section
@@ -116,11 +97,13 @@ const VerifyForgetPassword = () => {
 
           <button
             type="submit"
-            disabled={form.isSubmitting}
-            className="h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9] disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
           >
-            {form.isSubmitting ? "Verifying..." : "Verify code"}
+            Verify code
           </button>
+          <p role="status" className="text-center text-sm text-[#56637A]">
+            {message}
+          </p>
         </form>
 
         <p className="mt-4 text-center text-sm text-[#56637A]">
@@ -141,6 +124,6 @@ const VerifyForgetPassword = () => {
       </section>
     </main>
   );
-};
+
 
 export default VerifyForgetPassword;
