@@ -13,11 +13,15 @@ const VerifyForgetPassword = () => {
   const form = useFormik({
     initialValues: {
       email: "",
+      otpCode: "",
     },
     validationSchema: object({
       email: string()
         .required("Email is required")
         .email("Enter a valid email address"),
+      otpCode: string()
+        .required("Enter the verification code")
+        .matches(/^[0-9]{6}$/, "Enter exactly 6 digits"),
     }),
     onSubmit: async (values) => {
       try {
@@ -92,7 +96,7 @@ const VerifyForgetPassword = () => {
             </label>
             <input
               id="verification-code"
-              name="code"
+              name="otpCode"
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
@@ -102,7 +106,11 @@ const VerifyForgetPassword = () => {
               aria-describedby="code-instructions"
               title="Enter a 6-digit verification code"
               placeholder="000000"
-              className="h-14 w-full rounded-xl border border-[#D8E1EF] bg-white px-4 text-center text-2xl tracking-[0.4em] outline-none transition placeholder:text-[#A2AEC0] focus:border-[#4788F9] focus:ring-2 focus:ring-[#4788F9]/25"
+              value={form.values.otpCode}
+              onChange={form.handleChange}
+              data-error={Boolean(form.errors.otpCode)}
+              className="h-14 w-full rounded-xl border border-[#D8E1EF] bg-white px-4 text-center text-2xl tracking-[0.4em] outline-none transition placeholder:text-[#A2AEC0] focus:border-[#4788F9] focus:ring-2 focus:ring-[#4788F9]/25
+               data-[error=true]:border-red-500"
             />
           </div>
 
