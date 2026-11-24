@@ -5,7 +5,7 @@ import { object, string } from "yup";
 import { toast } from "sonner";
 
 const ForgetPssword = () => {
-  const formForgetPssword = useFormik({
+  const form = useFormik({
     initialValues: {
       email: "",
     },
@@ -42,7 +42,7 @@ const ForgetPssword = () => {
       type: "email",
       label: "Email",
       autoComplete: "email",
-      error: "email",
+      error: form.errors.email,
     },
   ];
   return (
@@ -62,7 +62,7 @@ const ForgetPssword = () => {
               <h1 className="mb-2 block text-m ">Email address</h1>
 
               <form
-                onSubmit={formForgetPssword.handleSubmit}
+                onSubmit={form.handleSubmit}
                 className="w-full bg-amber-300-"
               >
                 {fields.map((field, index) => (
@@ -75,18 +75,34 @@ const ForgetPssword = () => {
                       placeholder={field.placeholder}
                       id={field.name}
                       autoComplete={field.autoComplete}
-                      value={formForgetPssword.values.email}
-                      onChange={formForgetPssword.handleChange}
-                      onBlur={formForgetPssword.handleBlur}
-                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2"
+                      value={form.values.email}
+                      onChange={form.handleChange}
+                      onBlur={form.handleBlur}
+                      data-error={Boolean(field.error)}
+                      className="w-full h-auto rounded-xl border bg-white px-5 py-3 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:ring-2 bg-[#EF4444]
+                   
+                      data-[error=true]:border-red-500"
                     />
+                    <span className="text-red-500 text-sm bg-amber-800-">
+                      {field.error}
+                    </span>
                   </div>
                 ))}
                 <button
                   type="submit"
                   className="mt-2 h-12 w-full rounded-xl bg-[#4788F9] font-semibold text-white transition hover:bg-[#3677E8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
                 >
-                  Send OTP Code
+                  {form.isSubmitting ? (
+                    <span className="inline-flex items-baseline gap-2">
+                      <span
+                        aria-hidden="true"
+                        className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+                      />
+                      Loading...
+                    </span>
+                  ) : (
+                    "Send Otp"
+                  )}{" "}
                 </button>
               </form>
             </div>
