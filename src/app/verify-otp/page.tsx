@@ -6,18 +6,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { string } from "yup";
+import { number, object, string } from "yup";
 
 const VerifyForgetPassword = () => {
   const router = useRouter();
   const form = useFormik({
     initialValues: {
       email: "",
+      otpCode: "",
     },
-    validationSchema: Object({
+    validationSchema: object({
       email: string()
         .required("Email is required")
         .email("Enter a valid email address"),
+      otpCode: string()
+        .required("Enter the verification code")
+        .matches(/^[0-9]{6}$/, "Enter exactly 6 digits"),
     }),
     onSubmit: async (values) => {
       try {
@@ -32,7 +36,7 @@ const VerifyForgetPassword = () => {
         const data = await response.json();
         if (response.ok) {
           toast.success(data.msg);
-          router.push("/verify-otp");
+          router.push("/reset-password");
         } else {
           toast.error(data.msg);
         }
