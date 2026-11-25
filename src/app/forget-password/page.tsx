@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const ForgetPssword = () => {
+  const router = useRouter();
   const form = useFormik({
     initialValues: {
       email: "",
@@ -28,6 +30,7 @@ const ForgetPssword = () => {
         const data = await response.json();
         if (response.ok) {
           toast.success(data.msg);
+          router.push("/verify-otp");
         } else {
           toast.error(data.msg);
         }

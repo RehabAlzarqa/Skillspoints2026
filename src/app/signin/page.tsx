@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const formLogin = useFormik({
     initialValues: {
       email: "",
@@ -33,6 +35,7 @@ const Page = () => {
 
         if (response.ok) {
           toast.success(data.msg);
+          router.push("/dashboard");
         } else {
           toast.error(data.msg);
         }
@@ -50,6 +53,7 @@ const Page = () => {
       type: "email",
       label: "Email",
       autoComplete: "email",
+      error: formLogin.errors.email,
     },
     {
       name: "password",
@@ -57,6 +61,7 @@ const Page = () => {
       type: "password",
       label: "Password",
       autoComplete: "current-password",
+      error: formLogin.errors.password,
     },
   ];
 
@@ -95,15 +100,11 @@ const Page = () => {
                   value={formLogin.values[field.name]}
                   onChange={formLogin.handleChange}
                   onBlur={formLogin.handleBlur}
-                  className="h-12 w-full rounded-xl border border-[#D8DEE9] bg-white px-4 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:border-[#4788F9] focus:ring-2 focus:ring-[#E8F1FF]"
+                  data-error={Boolean(field.error)}
+                  className="h-12 w-full rounded-xl border border-[#D8DEE9] bg-white px-4 text-base text-[#071B3D] outline-none transition placeholder:text-[#56637A] focus:border-[#4788F9] focus:ring-2 focus:ring-[#E8F1FF] data-[error=true]:border-red-500"
                 />
-                {formLogin.touched[field.name] &&
-                  formLogin.errors[field.name] && (
-                    <span className="text-rose-600">
-                      {" "}
-                      {formLogin.errors[field.name]}
-                    </span>
-                  )}
+
+                <span className="text-rose-600">{field.error}</span>
               </div>
             ))}
             <button
@@ -124,10 +125,16 @@ const Page = () => {
               )}{" "}
             </button>
           </form>
-
-          <p className="mt-5 text-center text-sm leading-5 text-[#56637A]">
-            By continuing you agree to your company&apos;s acceptable use policy
+          <p className="mt-5 text-center text-sm leading-5 text-[#56637A] flex justify-center gap-2">
+            Don&apos;t have an account? {""}
+            <Link
+              href="/signup"
+              className=" self-center text-sm font-semibold text-[#4788F9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
+            >
+              Sign up
+            </Link>
           </p>
+
           <Link
             href="/forget-password"
             className="mt-4 self-center text-sm font-semibold text-[#4788F9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4788F9]"
