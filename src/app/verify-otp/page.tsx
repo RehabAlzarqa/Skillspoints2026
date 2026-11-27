@@ -108,9 +108,6 @@ const VerifyForgetPassword = () => {
           >
             Verify code
           </button>
-          <p role="status" className="text-center text-sm text-[#56637A]">
-            {message}
-          </p>
         </form>
 
         <p className="mt-4 text-center text-sm text-[#56637A]">
