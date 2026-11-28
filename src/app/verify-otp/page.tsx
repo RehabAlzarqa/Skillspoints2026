@@ -1,44 +1,51 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { useFormik } from "formik";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
+import { number, object, string } from "yup";
 
-const VerifyForgetPassword = () => {};
-const router = useRouter();
-const form = useFormik({
-  initialValues: {
-    email: "",
-  },
-  validationSchema: object({
-    email: string()
-      .required("Email is required")
-      .email("Enter a valid email address"),
-  }),
-  onSubmit: async (values) => {
-    try {
-      const email = values.email; // connect the page to forget-password api
-      const response = await fetch("/api/auth/forget-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.msg);
-        router.push("/verify-otp");
-      } else {
-        toast.error(data.msg);
+const VerifyForgetPassword = () => {
+  const router = useRouter();
+  const form = useFormik({
+    initialValues: {
+      email: "",
+      otpCode: "",
+    },
+    validationSchema: object({
+      email: string()
+        .required("Email is required")
+        .email("Enter a valid email address"),
+      otpCode: string()
+        .required("Enter the verification code")
+        .matches(/^[0-9]{6}$/, "Enter exactly 6 digits"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const email = values.email; // connect the page to forget-password api
+        const response = await fetch("/api/auth/forget-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          toast.success(data.msg);
+          router.push("/reset-password");
+        } else {
+          toast.error(data.msg);
+        }
+      } catch {
+        toast.error("Unable to send the OTP code. Please try again.");
       }
-    } catch {
-      toast.error("Unable to send the OTP code. Please try again.");
-    }
-  },
-});
+    },
+  });
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f5faff] bg-[radial-gradient(ellipse_at_top_left,#dbeafe,transparent_50%),radial-gradient(ellipse_at_bottom_right,#dbeafe,transparent_50%)] px-4 py-10">
       <section
@@ -101,9 +108,6 @@ const form = useFormik({
           >
             Verify code
           </button>
-          <p role="status" className="text-center text-sm text-[#56637A]">
-            {message}
-          </p>
         </form>
 
         <p className="mt-4 text-center text-sm text-[#56637A]">
@@ -124,6 +128,5 @@ const form = useFormik({
       </section>
     </main>
   );
-
-
+};
 export default VerifyForgetPassword;

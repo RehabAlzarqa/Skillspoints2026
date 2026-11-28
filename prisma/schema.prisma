@@ -65,6 +65,7 @@ model MyLearning {
   @@index([courseId], map: "MyLearning_microCourseId_idx")
   @@index([userId])
   @@index([courseId])
+  @@unique([userId, courseId])
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
